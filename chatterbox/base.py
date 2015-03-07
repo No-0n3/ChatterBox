@@ -47,6 +47,11 @@ class Bot(irc.IRCClient):
         self.notice(self.factory.config.get("bot", "owner_nick"),
             "I joined {}".format(channel))
 
+    def noticed(self, user, channel, msg):
+        """Called when a notice is recieved."""
+        self.notice(self.factory.config.get("bot", "owner_nick"),
+            "From %s/%s: %s" % (user, channel, msg))
+
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
 
@@ -133,6 +138,11 @@ class Bot(irc.IRCClient):
         """List channels."""
         channels = self.factory.config.get("irc", "channels")
         self.notice(self.factory.config.get("bot", "owner_nick"), channels)
+
+    def cmd_msg(self, user, src_chan, dest, message):
+        """Tell the bot to send a message. @msg <user> <message>"""
+        if dest and message:
+            self.msg(dest, message)
 
 
 class BotFactory(protocol.ReconnectingClientFactory):
