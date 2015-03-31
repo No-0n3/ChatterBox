@@ -1,0 +1,17 @@
+{
+  "network": {
+    "port": 6667,
+    "password": "PASSWORD",
+    "host": "IRC_HOST"
+  },
+  "identity": {
+    "realname": "ChatterBox",
+    "nickname": "ChatterBox",
+    "username": "ChatterBox"
+  },
+  "general": {
+    "linerate": 1,
+    "prefix": "#",
+    "private": false
+  }
+}

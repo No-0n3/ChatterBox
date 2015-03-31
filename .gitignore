@@ -1,2 +1,5 @@
 *.nja
 *.pyc
+*.db
+config.json
+*.cache
