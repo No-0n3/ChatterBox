@@ -4,6 +4,7 @@ from twisted.words.protocols import irc
 from twisted.internet import threads
 from twisted.python import log
 from cobe.brain import Brain
+import re
 
 
 class Bot(irc.IRCClient):
@@ -13,7 +14,7 @@ class Bot(irc.IRCClient):
     password = ""
     username = ""
     realname = ""
-    learn = True
+    learn = False
     brain = None
     private = False
 
@@ -35,7 +36,7 @@ class Bot(irc.IRCClient):
     # callbacks for events
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
-        self.brain = Brain("brain.db")
+        self.brain = Brain("cobe.brain")
 
     def kickedFrom(self, channel, kicker, message):
         """Called when I am kicked from a channel."""
@@ -79,7 +80,8 @@ class Bot(irc.IRCClient):
                         self.msg(channel, reply)
 
                 if self.learn:
-                    self.brain.learn(msg)
+                    nick_exclude = re.compile(re.escape(self.nickname), re.I)
+                    self.brain.learn(nick_exclude.sub('', msg))
 
     # User-defined commands
     def cmd_join(self, user, src_chan, channel, password=None):
@@ -120,3 +122,7 @@ class Bot(irc.IRCClient):
         """Tell the bot to send a message. @msg <user> <message>"""
         if dest and message:
             self.msg(dest, message)
+
+    def cmd_reload(self, user, src_chan, *args):
+        """Command to reload brain. @reload"""
+        self.brain = Brain("cobe.brain")
