@@ -28,6 +28,7 @@ class Bot(irc.IRCClient):
         self.realname = self.factory.realname
         self.lineRate = self.factory.linerate
         self.private = self.factory.private
+        self.joininvite = self.factory.joininvite
 
         irc.IRCClient.connectionMade(self)
 

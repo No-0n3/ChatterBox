@@ -26,6 +26,7 @@ class BotFactory(protocol.ReconnectingClientFactory):
         self.linerate = config['general']['linerate']
         self.prefix = config['general']['prefix'].encode('utf8')
         self.private = config['general']['private']
+        self.joininvite = config['general']['joininvite']
 
     def startFactory(self):
         """Called when starting factory"""
