@@ -71,8 +71,6 @@ class Bot(irc.IRCClient):
                         channel, *args)
                 else:
                     self.notice(user.split('!', 1)[0], "Unknown command!")
-        elif self.joininvite and msg.startswith("!invite"):
-            self.join(channel)
         else:
             if self.brain:
                 reply = self.brain.reply(msg).encode('utf8')
@@ -88,6 +86,13 @@ class Bot(irc.IRCClient):
                 if self.learn:
                     nick_exclude = re.compile(re.escape(self.nickname), re.I)
                     self.brain.learn(nick_exclude.sub('', msg))
+
+    def irc_INVITE(self, inviter, params):
+        """Action when the bot recevies an invite."""
+        log.msg("{} invited {} to {}.".format(inviter, params[0], params[1]))
+
+        if self.joininvite:
+            self.join(params[1])
 
     # User-defined commands
     def cmd_join(self, user, src_chan, channel, password=None):
