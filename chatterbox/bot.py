@@ -17,6 +17,8 @@ class Bot(irc.IRCClient):
     learn = False
     brain = None
     private = False
+    kickrejoin = False
+    joininvite = False
 
     def connectionMade(self):
         """Is run when the connection is successful."""
@@ -40,7 +42,9 @@ class Bot(irc.IRCClient):
 
     def kickedFrom(self, channel, kicker, message):
         """Called when I am kicked from a channel."""
-        self.join(channel)
+        if self.kickrejoin:
+            self.join(channel)
+
         log.msg("I was kicked from {} by {} because: {}".format(
             channel, kicker, message))
 
@@ -67,6 +71,8 @@ class Bot(irc.IRCClient):
                         channel, *args)
                 else:
                     self.notice(user.split('!', 1)[0], "Unknown command!")
+        elif self.joininvite and msg.startswith("!invite"):
+            self.join(channel)
         else:
             if self.brain:
                 reply = self.brain.reply(msg).encode('utf8')
@@ -126,3 +132,13 @@ class Bot(irc.IRCClient):
     def cmd_reload(self, user, src_chan, *args):
         """Command to reload brain. @reload"""
         self.brain = Brain("cobe.brain")
+
+    def cmd_kickrejoin(self, user, src_chan, *args):
+        """Command to toggle kickrejoin. @kickrejoin"""
+        self.kickrejoin = not self.kickrejoin
+        self.notice(user.split('!', 1)[0], "Kickrejoin: %s" % self.kickrejoin)
+
+    def cmd_joininvite(self, user, src_chan, *args):
+        """Command to toggle joininvite. @joininvite"""
+        self.joininvite = not self.joininvite
+        self.notice(user.split('!', 1)[0], "Joininvite: %s" % self.joininvite)
