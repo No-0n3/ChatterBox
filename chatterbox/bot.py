@@ -132,7 +132,7 @@ class Bot(irc.IRCClient):
     def cmd_msg(self, user, src_chan, dest, *message):
         """Tell the bot to send a message. @msg <user> <message>"""
         if dest and message:
-            self.msg(dest, ''.join(message))
+            self.msg(dest, ' '.join(message))
 
     def cmd_reload(self, user, src_chan, *args):
         """Command to reload brain. @reload"""
